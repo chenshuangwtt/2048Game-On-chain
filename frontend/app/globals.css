@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+  /* Backgrounds */
+  --primary-background: #faf8ef;
+  --secondary-background: #b59d87;
+  --cell-background: #cebda6;
+  --tile-background: #eee4da;
+  --button-background: #8f7a66;
+
+  /* Colors */
+  --primary-text-color: #776e65;
+  --secondary-text-color: #f9f6f2;
+
+  background: var(--primary-background);
+  color: var(--primary-text-color);
+}
+
+@keyframes tile-pop {
+  0% {
+    opacity: 0.45;
+    scale: 0.84;
+  }
+
+  55% {
+    opacity: 1;
+    scale: 1.06;
+  }
+
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.tile-pop {
+  animation: tile-pop 165ms cubic-bezier(0.2, 0.85, 0.24, 1.12);
+  transform-origin: center;
+  will-change: transform, opacity;
+}

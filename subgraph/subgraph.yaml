@@ -1,0 +1,38 @@
+specVersion: 1.3.0
+indexerHints:
+  # 让索引器自动选择合适的裁剪策略，减少历史状态占用。
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: OnChain2048Scores
+    network: sepolia
+    source:
+      # 当前已经部署到 Sepolia 的主合约地址。
+      address: "0x5B788710133bA6785C0798561aA8546108006Af7"
+      abi: OnChain2048Scores
+      # 从部署区块开始扫，避免从过早历史区块开始全链回放。
+      startBlock: 10601641
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Player
+        - GameSession
+        - ScoreEntry
+      abis:
+        - name: OnChain2048Scores
+          file: ./abis/OnChain2048Scores.json
+      eventHandlers:
+        # 建局时创建 GameSession，并关联玩家与 VRF requestId。
+        - event: GameSeedRequested(indexed address,indexed uint256,indexed uint256)
+          handler: handleGameSeedRequested
+        # VRF 回填后，把 seed 和 fulfill 元数据写回会话。
+        - event: GameSeedFulfilled(indexed address,indexed uint256,bytes32)
+          handler: handleGameSeedFulfilled
+        # 成绩提交后生成 ScoreEntry，并更新 Player 聚合统计。
+        - event: ScoreSubmitted(indexed address,indexed uint256,uint64,bytes32,uint64,bool)
+          handler: handleScoreSubmitted
+      file: ./src/on-chain-2048-scores.ts

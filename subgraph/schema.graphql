@@ -1,0 +1,56 @@
+"""
+玩家聚合视图。
+这个实体不是链上原生对象，而是 subgraph 根据事件汇总出来的读模型：
+- `bestScore` 用于排行榜
+- `gamesPlayed` / `totalScore` 用于玩家统计
+- `sessions` / `results` 通过 derivedFrom 反查玩家相关的一切记录
+"""
+type Player @entity(immutable: false) {
+  id: ID!
+  bestScore: BigInt!
+  gamesPlayed: BigInt!
+  totalScore: BigInt!
+  lastPlayedAt: BigInt
+  createdAt: BigInt!
+  updatedAt: BigInt!
+  sessions: [GameSession!]! @derivedFrom(field: "player")
+  results: [ScoreEntry!]! @derivedFrom(field: "player")
+}
+
+"""
+一局游戏的会话实体，对应链上的 `gameId`。
+它会把“申请随机数 -> VRF 回填 -> 成绩提交”这几个阶段串起来。
+"""
+type GameSession @entity(immutable: false) {
+  id: ID!
+  gameId: BigInt!
+  requestId: BigInt!
+  player: Player!
+  requestedAt: BigInt!
+  fulfilledAt: BigInt
+  seed: Bytes
+  seedReady: Boolean!
+  consumed: Boolean!
+  requestTxHash: Bytes!
+  requestBlockNumber: BigInt!
+  fulfillTxHash: Bytes
+  fulfillBlockNumber: BigInt
+  scoreEntry: ScoreEntry
+}
+
+"""
+最终成绩实体，对应链上的 `ScoreSubmitted` 事件。
+这是排行榜、最近成绩流、玩家历史的核心数据来源。
+"""
+type ScoreEntry @entity(immutable: true) {
+  id: ID!
+  gameHash: Bytes!
+  player: Player!
+  session: GameSession!
+  gameId: BigInt!
+  score: BigInt!
+  timestamp: BigInt!
+  isNewBest: Boolean!
+  txHash: Bytes!
+  blockNumber: BigInt!
+}

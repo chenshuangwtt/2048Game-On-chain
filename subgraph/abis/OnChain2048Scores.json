@@ -1,0 +1,35 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "player", "type": "address" },
+      { "indexed": true, "internalType": "uint256", "name": "gameId", "type": "uint256" },
+      { "indexed": true, "internalType": "uint256", "name": "requestId", "type": "uint256" }
+    ],
+    "name": "GameSeedRequested",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "player", "type": "address" },
+      { "indexed": true, "internalType": "uint256", "name": "gameId", "type": "uint256" },
+      { "indexed": false, "internalType": "bytes32", "name": "seed", "type": "bytes32" }
+    ],
+    "name": "GameSeedFulfilled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "player", "type": "address" },
+      { "indexed": true, "internalType": "uint256", "name": "gameId", "type": "uint256" },
+      { "indexed": false, "internalType": "uint64", "name": "score", "type": "uint64" },
+      { "indexed": false, "internalType": "bytes32", "name": "gameHash", "type": "bytes32" },
+      { "indexed": false, "internalType": "uint64", "name": "timestamp", "type": "uint64" },
+      { "indexed": false, "internalType": "bool", "name": "isNewBest", "type": "bool" }
+    ],
+    "name": "ScoreSubmitted",
+    "type": "event"
+  }
+]

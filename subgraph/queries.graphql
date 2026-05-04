@@ -1,0 +1,45 @@
+# 排行榜主页查询：
+# 直接读取 Player 聚合字段，不必在前端遍历所有成绩后再自己计算 best score。
+query TopPlayers {
+  players(first: 100, orderBy: bestScore, orderDirection: desc) {
+    id
+    bestScore
+    gamesPlayed
+    totalScore
+    lastPlayedAt
+  }
+}
+
+# 最近成绩流：
+# 适合首页 feed、最近战绩弹窗、或运营演示时展示“链上有持续活跃”的感觉。
+query RecentScores {
+  scoreEntries(first: 20, orderBy: timestamp, orderDirection: desc) {
+    id
+    gameId
+    score
+    timestamp
+    isNewBest
+    player {
+      id
+      bestScore
+    }
+  }
+}
+
+# 玩家详情页：
+# 同时拿到玩家聚合统计和个人历史成绩，避免发两次查询。
+query PlayerHistory($player: ID!) {
+  player(id: $player) {
+    id
+    bestScore
+    gamesPlayed
+    totalScore
+    results(orderBy: timestamp, orderDirection: desc, first: 50) {
+      id
+      gameId
+      score
+      timestamp
+      isNewBest
+    }
+  }
+}
