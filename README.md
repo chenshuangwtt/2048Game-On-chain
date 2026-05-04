@@ -240,4 +240,4 @@ git rm --cached .env backend/.env frontend/.env.local backend/issued-games.json
 
 ## License
 
-如果你准备公开仓库，建议补一个 LICENSE 文件。
+This project is licensed under the [MIT License](./LICENSE).
